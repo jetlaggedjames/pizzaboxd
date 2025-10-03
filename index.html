@@ -1,95 +1,321 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Pizzaboxd</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>pizzaboxd.com — under construction</title>
+  <link href="https://fonts.googleapis.com/css2?family=inter:wght@300;400;600&family=space+grotesk:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; background: #111; color: #eee; text-align:center; }
-    input, button { margin: 5px; padding: 8px; }
-    .pizza-card { background:#222; margin:10px auto; padding:10px; width:300px; border-radius:8px; }
+    :root{
+      --bg:#0b0f12;
+      --panel:rgba(15,20,23,0.7);
+      --muted:#9aa3a8;
+      --accent:#ff6b35;
+      --accent-2:#ffd36b;
+      --glass: rgba(255,255,255,0.08);
+      --radius:14px;
+      --retro-shadow: 0 6px 30px rgba(8,10,12,0.7), inset 0 -2px 8px rgba(255,255,255,0.02);
+      color-scheme: dark;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: var(--bg);
+      color:#dbe6ea;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:32px;
+      overflow-x:hidden;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"><polygon points="0,16 8,0 16,16" fill="%23ff6b35"/></svg>') 8 0, auto;
+    }
+
+    .blurred{filter:blur(8px);pointer-events:none;}
+
+    .card{
+      width:100%;
+      max-width:1000px;
+      background:var(--panel);
+      border-radius:22px;
+      padding:28px;
+      box-shadow:var(--retro-shadow);
+      border:1px solid rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px) saturate(1.2);
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      gap:24px;
+      opacity:0;
+      transform:translateY(40px);
+      animation:slideUp 0.8s ease forwards 0.5s;
+    }
+
+    @keyframes slideUp {
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    body::before {
+      content:"";
+      position:fixed;inset:0;z-index:-1;
+      background: radial-gradient(800px 800px at 10% 20%, rgba(255,107,53,0.25), transparent 50%),
+                  radial-gradient(1000px 600px at 80% 80%, rgba(255,211,107,0.25), transparent 60%),
+                  radial-gradient(600px 600px at 50% 50%, rgba(53,162,255,0.35), transparent 60%);
+      background-size:300% 300%;
+      animation:northernLights 18s ease-in-out infinite alternate;
+      filter:blur(20px);
+    }
+    @keyframes northernLights {
+      0%{background-position:0% 0%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 100%}
+    }
+
+    .brand{display:flex;gap:14px;align-items:center;position:relative}
+    .logo{width:72px;height:72px;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow: 0 6px 20px rgba(255,107,53,0.12), inset 0 -6px 18px rgba(255,255,255,0.06);}
+    .logo img{width:100%;height:100%;object-fit:contain;border-radius:16px;}
+    .brand h1{margin:0;font-family:'space grotesk';font-size:32px;letter-spacing:0.02em;text-transform:lowercase;cursor:default}
+    .brand h1:hover::after{content:'not for jersey folks';position:absolute;top:40px;left:0;font-size:12px;color:var(--accent)}
+    .brand p{margin:0;color:var(--muted);font-size:13px}
+
+    .left{display:flex;flex-direction:column;gap:18px}
+    .panel{background:var(--glass);border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.04)}
+
+    .big-cta h2{margin:0;font-size:18px;text-transform:lowercase}
+    .big-cta p{margin:0;color:var(--muted);font-size:13px}
+
+    .btn-row{display:flex;gap:10px;margin-top:6px}
+    .btn{padding:10px 14px;border-radius:10px;border:0;background:transparent;color:var(--accent);cursor:pointer;font-weight:600;font-size:13px;border:1px solid rgba(255,107,53,0.12);backdrop-filter: blur(4px);transition:all .3s ease}
+    .btn:hover{background:var(--accent);color:#000}
+
+    .right{display:flex;flex-direction:column;gap:14px}
+
+    .mockup{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .movie-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;border:1px solid rgba(255,255,255,0.02)}
+    .poster{width:48px;height:68px;border-radius:6px;background:linear-gradient(180deg,var(--accent-2), #ffb56b);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;color:#081015}
+    .meta{display:flex;flex-direction:column}
+    .meta .title{font-size:13px;margin:0;text-transform:lowercase}
+    .meta .sub{font-size:11px;color:var(--muted);margin-top:6px}
+
+    .coming-soon{margin-top:auto;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,107,53,0.04), rgba(255,211,107,0.02));text-align:center}
+    .coming-soon p{margin:0;font-weight:600;text-transform:lowercase}
+
+    footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center;grid-column:1/-1}
+
+    @media (max-width:880px){.card{grid-template-columns:1fr;max-width:720px}.brand{justify-content:center}footer{text-align:center}}
+    @media (max-width:420px){body{padding:18px}.logo{width:56px;height:56px;font-size:16px}}
+
+    /* overlay captcha */
+    .captcha-overlay{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,0.85);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+      flex-direction:column;
+    }
+    .captcha-box{
+      background:#1a1d20;
+      padding:20px;
+      border-radius:12px;
+      width:360px;
+      text-align:center;
+      box-shadow:0 0 40px rgba(0,0,0,0.6);
+      animation:slideUp 0.6s ease forwards;
+    }
+    .captcha-box h3{margin:0 0 12px;font-size:14px;text-transform:lowercase;color:#fff}
+    .captcha-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+    .captcha-grid img{width:100%;height:100%;object-fit:cover;border-radius:4px;cursor:pointer;transition:transform .2s ease}
+    .captcha-grid img:hover{transform:scale(1.05)}
+    .captcha-grid .selected{outline:3px solid var(--accent)}
+    .captcha-button{margin-top:14px;padding:8px 12px;border-radius:8px;background:var(--accent);border:none;color:#000;cursor:pointer;font-weight:600;text-transform:lowercase;transition:all .3s ease}
+    .captcha-button:hover{background:#ff844f;transition:.3s ease}
+    .checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;cursor:pointer}
+    .checkbox{width:20px;height:20px;border:2px solid #ccc;border-radius:4px;position:relative;transition:all .3s ease}
+    .checkbox.checked::after{content:"✔";position:absolute;left:2px;top:-4px;font-size:20px;color:var(--accent)}
+    .signature-box{display:none;margin-top:12px;text-align:left;opacity:0;transform:translateY(-10px);transition:all .3s ease}
+    .signature-box.show{display:block;opacity:1;transform:translateY(0)}
+    .signature-box textarea{width:100%;height:50px;border-radius:6px;padding:6px;font-family:inherit;font-size:13px}
   </style>
 </head>
 <body>
-  <h1>🍕 Pizzaboxd</h1>
-
-  <!-- Auth -->
-  <div id="auth-section">
-    <h2>Login / Sign Up</h2>
-    <input type="email" id="email" placeholder="Email"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="signup()">Sign Up</button>
-    <button onclick="login()">Log In</button>
-  </div>
-
-  <!-- Pizza Joints -->
-  <div id="pizza-section" style="display:none;">
-    <h2>Rate Pizza Joints</h2>
-    <div class="pizza-card">
-      <h3>Joe's Pizza</h3>
-      <input type="number" id="joes-rating" min="1" max="5" placeholder="1-5">
-      <button onclick="submitReview('joes')">Submit</button>
-      <p id="joes-average">Average: …</p>
+  <div class="captcha-overlay" id="captchaOverlay">
+    <div class="captcha-box">
+      <div class="checkbox-row" id="checkboxRow">
+        <div class="checkbox" id="njCheckbox"></div>
+        <span style="color:#fff;font-size:13px">i'm not from jersey</span>
+      </div>
+      <div class="signature-box" id="signatureBox">
+        <label style="color:#fff;font-size:12px">sign below:</label>
+        <textarea id="signature"></textarea>
+      </div>
+      <div id="captchaContent"></div>
+      <button class="captcha-button" id="captchaBtn">verify</button>
     </div>
   </div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <main class="card" role="main" aria-labelledby="site-title" id="mainContent">
+    <section class="left">
+      <div class="brand">
+        <div class="logo"><img src="https://i.imgur.com/nDEgJ2W.png" alt="pizzaboxd logo"></div>
+        <div>
+          <h1 id="site-title">pizzaboxd.com</h1>
+          <p>new york city • pizza rating & reviews</p>
+        </div>
+      </div>
 
-    const firebaseConfig = {
-  apiKey: "AIzaSyBFbRlBvTEeApTcT4EQL20KSAp1zkbcIJ4",
-  authDomain: "pizzaboxd1.firebaseapp.com",
-  projectId: "pizzaboxd1",
-  storageBucket: "pizzaboxd1.firebasestorage.app",
-  messagingSenderId: "724954809781",
-  appId: "1:724954809781:web:ae3490dd3e1962309a85fc",
-  measurementId: "G-F7CRGNGEXP"
-    };
+      <div class="panel big-cta">
+        <h2>site under construction</h2>
+        <p>pizzaboxd.com is being cooked. sign up to get an invite when the beta slices drop — ny-only.</p>
+        <div class="btn-row">
+          <button class="btn" id="waitlistBtn">join waitlist</button>
+        </div>
+      </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+      <div class="panel">
+        <h3 style="margin:0;text-transform:lowercase;font-size:13px">features (coming)</h3>
+        <ul style="margin:12px 0 0 18px;padding:0;color:var(--muted);font-size:13px">
+          <li>rate ny pizza spots 1–5 stars</li>
+          <li>witty or serious reviews</li>
+          <li>nyc neighbourhood tags</li>
+          <li>local meetups & pizza tours</li>
+          <li>there's always money in the banana stand</li>
+        </ul>
+      </div>
 
-    // Auth functions
-    window.signup = async function() {
-      const email = document.getElementById("email").value;
-      const pass = document.getElementById("password").value;
-      await createUserWithEmailAndPassword(auth, email, pass);
+      <div class="panel">
+        <h3 style="margin:0;text-transform:lowercase;font-size:13px">contact</h3>
+        <p style="margin:8px 0 0 0;color:var(--muted);font-size:13px">james@pizzaboxd.com</p>
+      </div>
+    </section>
+
+    <section class="right">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <p style="margin:0;color:var(--muted);font-size:13px;text-transform:lowercase">recent pizza picks (mock)</p>
+        <p style="margin:0;color:var(--muted);font-size:13px;text-transform:lowercase">for nyc eyes only</p>
+      </div>
+
+      <div class="mockup">
+        <article class="movie-card">
+          <div class="poster">nyc</div>
+          <div class="meta">
+            <p class="title">a slice of life</p>
+            <p class="sub">spot • 2024</p>
+          </div>
+        </article>
+
+        <article class="movie-card">
+          <div class="poster">brooklyn</div>
+          <div class="meta">
+            <p class="title">midnight delivery</p>
+            <p class="sub">spot • 2023</p>
+          </div>
+        </article>
+
+        <article class="movie-card">
+          <div class="poster">queens</div>
+          <div class="meta">
+            <p class="title">late night slice</p>
+            <p class="sub">spot • 2022</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="coming-soon panel">
+        <p>beta invites drop soon — we're keeping it local to nyc</p>
+      </div>
+
+      <footer>
+        <small>© pizzaboxd.com — made for new yorkers • all content lowercased intentionally</small>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const overlay = document.getElementById('captchaOverlay');
+    const mainContent = document.getElementById('mainContent');
+    const njCheckbox = document.getElementById('njCheckbox');
+    const signatureBox = document.getElementById('signatureBox');
+    const captchaContent = document.getElementById('captchaContent');
+    const captchaBtn = document.getElementById('captchaBtn');
+    const waitlistBtn = document.getElementById('waitlistBtn');
+    const signature = document.getElementById('signature');
+
+    function shuffle(array){return array.sort(()=>Math.random()-0.5)}
+
+    function generateCaptcha(){
+      const type = Math.random()>0.5?'grid':'map';
+      captchaContent.innerHTML='';
+      if(type==='grid'){
+        const nyImages = [
+          'https://i.imgur.com/Rgl2ewx.jpeg',
+          'https://i.imgur.com/nGMDtse.png'
+        ];
+        const fillers = Array(7).fill('https://i.imgur.com/EPNkr8U.png');
+        let imgs = shuffle([...nyImages, ...fillers]);
+        const gridDiv = document.createElement('div');
+        gridDiv.className='captcha-grid';
+        imgs.forEach(url=>{
+          const img = document.createElement('img');
+          img.src=url;
+          img.dataset.ny = (nyImages.includes(url)) ? 'true':'false';
+          gridDiv.appendChild(img);
+        });
+        captchaContent.innerHTML='<h3>select all squares with ny slices</h3>';
+        captchaContent.appendChild(gridDiv);
+      } else {
+        captchaContent.innerHTML = `<h3>where is the best pizza in the world?</h3>
+          <div class="captcha-grid" style="grid-template-columns:repeat(2,1fr)">
+            <img src="https://i.imgur.com/2IfTW7r.png" data-ny="false">
+            <img src="https://i.imgur.com/4DziQ9v.png" data-ny="true">
+          </div>`;
+      }
+
+      captchaContent.querySelectorAll('img').forEach(img=>{
+        img.addEventListener('click', ()=>{img.classList.toggle('selected')});
+      });
     }
 
-    window.login = async function() {
-      const email = document.getElementById("email").value;
-      const pass = document.getElementById("password").value;
-      await signInWithEmailAndPassword(auth, email, pass);
-    }
-
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        document.getElementById("auth-section").style.display = "none";
-        document.getElementById("pizza-section").style.display = "block";
+    njCheckbox.addEventListener('click', ()=>{
+      njCheckbox.classList.toggle('checked');
+      if(njCheckbox.classList.contains('checked')){
+        signatureBox.classList.add('show');
+      } else {
+        signatureBox.classList.remove('show');
       }
     });
 
-    // Review submission
-    window.submitReview = async function(pizzaId) {
-      const rating = parseInt(document.getElementById("joes-rating").value);
-      const ref = doc(db, "pizzas", pizzaId);
-      const snap = await getDoc(ref);
-
-      if (snap.exists()) {
-        const data = snap.data();
-        const newRatings = [...data.ratings, rating];
-        const avg = newRatings.reduce((a,b)=>a+b,0) / newRatings.length;
-        await updateDoc(ref, { ratings: arrayUnion(rating), average: avg });
-        document.getElementById("joes-average").innerText = "Average: ⭐ " + avg.toFixed(1);
+    captchaBtn.addEventListener('click', ()=>{
+      if(!njCheckbox.classList.contains('checked')){alert('verify you are not from jersey first');return;}
+      if(!signature.value.trim()){alert('please sign');return;}
+      const nyImgs = captchaContent.querySelectorAll('img[data-ny="true"]');
+      const allSelected = Array.from(nyImgs).every(img=>img.classList.contains('selected'));
+      const onlyCorrect = Array.from(captchaContent.querySelectorAll('img.selected')).every(img=>img.dataset.ny==='true');
+      if(allSelected && onlyCorrect){
+        overlay.style.display='none';
+        mainContent.classList.remove('blurred');
       } else {
-        await setDoc(ref, { ratings: [rating], average: rating });
-        document.getElementById("joes-average").innerText = "Average: ⭐ " + rating;
+        alert('try again, only real ny slices count.');
+        signature.value='';
+        njCheckbox.classList.remove('checked');
+        signatureBox.classList.remove('show');
+        generateCaptcha();
       }
-    }
+    });
+
+    waitlistBtn.addEventListener('click', ()=>{
+      waitlistBtn.style.transition='all 0.4s ease';
+      waitlistBtn.textContent='oh you clicked this? come back soon lol.';
+      waitlistBtn.disabled=true;
+      waitlistBtn.style.opacity=0.7;
+    });
+
+    mainContent.classList.add('blurred');
+    generateCaptcha();
   </script>
 </body>
 </html>
+
 
