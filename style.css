@@ -1,0 +1,10 @@
+body {
+  background-color: #fafafa;
+  font-family: monospace;
+  text-align: center;
+  margin: 2rem;
+}
+
+h1 {
+  color: darkred;
+}
