@@ -1,12 +1,95 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>pizzaboxd</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <h1>welcome to pizzaboxd.com</h1>
-    <p>letterboxd for new yorkers coming soon.</p>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <title>Pizzaboxd</title>
+  <style>
+    body { font-family: sans-serif; background: #111; color: #eee; text-align:center; }
+    input, button { margin: 5px; padding: 8px; }
+    .pizza-card { background:#222; margin:10px auto; padding:10px; width:300px; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <h1>🍕 Pizzaboxd</h1>
+
+  <!-- Auth -->
+  <div id="auth-section">
+    <h2>Login / Sign Up</h2>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="signup()">Sign Up</button>
+    <button onclick="login()">Log In</button>
+  </div>
+
+  <!-- Pizza Joints -->
+  <div id="pizza-section" style="display:none;">
+    <h2>Rate Pizza Joints</h2>
+    <div class="pizza-card">
+      <h3>Joe's Pizza</h3>
+      <input type="number" id="joes-rating" min="1" max="5" placeholder="1-5">
+      <button onclick="submitReview('joes')">Submit</button>
+      <p id="joes-average">Average: …</p>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyBFbRlBvTEeApTcT4EQL20KSAp1zkbcIJ4",
+  authDomain: "pizzaboxd1.firebaseapp.com",
+  projectId: "pizzaboxd1",
+  storageBucket: "pizzaboxd1.firebasestorage.app",
+  messagingSenderId: "724954809781",
+  appId: "1:724954809781:web:ae3490dd3e1962309a85fc",
+  measurementId: "G-F7CRGNGEXP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Auth functions
+    window.signup = async function() {
+      const email = document.getElementById("email").value;
+      const pass = document.getElementById("password").value;
+      await createUserWithEmailAndPassword(auth, email, pass);
+    }
+
+    window.login = async function() {
+      const email = document.getElementById("email").value;
+      const pass = document.getElementById("password").value;
+      await signInWithEmailAndPassword(auth, email, pass);
+    }
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        document.getElementById("auth-section").style.display = "none";
+        document.getElementById("pizza-section").style.display = "block";
+      }
+    });
+
+    // Review submission
+    window.submitReview = async function(pizzaId) {
+      const rating = parseInt(document.getElementById("joes-rating").value);
+      const ref = doc(db, "pizzas", pizzaId);
+      const snap = await getDoc(ref);
+
+      if (snap.exists()) {
+        const data = snap.data();
+        const newRatings = [...data.ratings, rating];
+        const avg = newRatings.reduce((a,b)=>a+b,0) / newRatings.length;
+        await updateDoc(ref, { ratings: arrayUnion(rating), average: avg });
+        document.getElementById("joes-average").innerText = "Average: ⭐ " + avg.toFixed(1);
+      } else {
+        await setDoc(ref, { ratings: [rating], average: rating });
+        document.getElementById("joes-average").innerText = "Average: ⭐ " + rating;
+      }
+    }
+  </script>
+</body>
 </html>
+
